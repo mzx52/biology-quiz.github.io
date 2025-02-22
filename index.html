@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина по переработке мусора</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: url('https://s7.stc.all.kpcdn.net/family/wp-content/uploads/2023/03/sortirovka_musora_oblogkkaa_960-960x540.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            text-align: center;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: auto;
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.5em; /* Увеличен размер текста */
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 10px 0;
+            font-size: 1.5em; /* Увеличен размер текста */
+        }
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.5em; /* Увеличен размер текста */
+        }
+        .hidden {
+            display: none;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        button {
+            font-size: 1.5em; /* Увеличен размер текста */
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .result {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Викторина по переработке мусора</h1>
+        <div id="quiz-container">
+            <!-- Вопросы будут добавляться сюда динамически -->
+        </div>
+        <button id="confirm-button" onclick="checkAnswer()">Подтвердить</button>
+        <button id="next-button" class="hidden" onclick="showNextQuestion()">Дальше</button>
+        <div id="result-container" class="hidden result">
+            <!-- Результаты будут показаны здесь -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Ваши вопросы здесь (25 вопросов)
+            {
+                question: "Какой процент мусора можно перерабатывать?",
+                options: ["25%", "50%", "75%", "90%"],
+                correct: 2
+            },
+            {
+                question: "Что можно переработать?",
+                options: ["Пластик", "Стекло", "Бумага", "Все вышеперечисленное"],
+                correct: 3
+            },
+            {
+                question: "Какой символ обозначает, что продукт можно перерабатывать?",
+                options: ["Круг", "Треугольник", "Квадрат", "Пятиугольник"],
+                correct: 1
+            },
+            {
+                question: "Какое из следующих материалов наиболее легко переработать?",
+                options: ["Пластик", "Стекло", "Бумага", "Металл"],
+                correct: 2
+            },
+            {
+                question: "Какая страна считается лидером по переработке мусора?",
+                options: ["Китай", "Германия", "США", "Индия"],
+                correct: 1
+            },
+            {
+                question: "Как переработка мусора помогает окружающей среде?",
+                options: ["Уменьшает количество отходов на свалках", "Снижает загрязнение воздуха и воды", "Экономит энергию и природные ресурсы", "Все вышеперечисленное"],
+                correct: 3
+            },
+            {
+                question: "Как называются специальные контейнеры для раздельного сбора мусора?",
+                options: ["Коммунальные баки", "Перерабатывающие баки", "Разделительные баки", "Сортировочные баки"],
+                correct: 3
+            },
+            {
+                question: "Какой из перечисленных предметов не подлежит переработке?",
+                options: ["Бумажные полотенца", "Картонные коробки", "Пластиковые бутылки", "Стеклянные банки"],
+                correct: 0
+            },
+            {
+                question: "Какое из следующих правил относится к переработке пластика?",
+                options: ["Мыть и снимать этикетки", "Сжигать перед переработкой", "Хранить в темном месте", "Смешивать с другими отходами"],
+                correct: 0
+            },
+            {
+                question: "Какая технология используется для переработки старых мобильных телефонов?",
+                options: ["Переплавка металлов", "Переработка пластика", "Экстракция редкоземельных элементов", "Все вышеперечисленное"],
+                correct: 3
+            },
+            {
+                question: "Какое вещество часто используется для переработки стекла?",
+                options: ["Вода", "Песок", "Лёд", "Кислота"],
+                correct: 1
+            },
+            {
+                question: "Какие виды отходов можно компостировать?",
+                options: ["Овощные и фруктовые отходы", "Стеклянные бутылки", "Пластиковые пакеты", "Металлические банки"],
+                correct: 0
+            },
+            {
+                question: "Какая мировая организация активно продвигает переработку и устойчивое развитие?",
+                options: ["ООН", "ВОЗ", "МВФ", "Всемирный банк"],
+                correct: 0
+            },
+            {
+                question: "Каким цветом обычно обозначаются контейнеры для переработки стекла?",
+                options: ["Зеленый", "Желтый", "Синий", "Красный"],
+                correct: 0
+            },
+            {
+                question: "Какие отходы нельзя компостировать?",
+                options: ["Овощные отходы", "Мясные остатки", "Бумажные упаковки", "Траву"],
+                correct: 1
+            },
+            {
+                question: "Каким способом можно перерабатывать металлы?",
+                options: ["Сжигание", "Переплавка", "Компрессия", "Все вышеперечисленное"],
+                correct: 1
+            },
+            {
+                question: "Какой процесс используется для переработки макулатуры?",
+                options: ["Размалывание", "Переработка в компост", "Сжигание", "Погружение в воду"],
+                correct: 0
+            },
+            {
+                question: "Какие отходы относятся к опасным?",
+                options: ["Пищевые отходы", "Аккумуляторы", "Стеклянные бутылки", "Пластиковые пакеты"],
+                correct: 1
+            },
+            {
+                question: "Что происходит с переработанным пластиком?",
+                options: ["Сжигается для энергии", "Переплавляется в новые изделия", "Выбрасывается в океан", "Утилизируется на свалке"],
+                correct: 1
+            },
+            {
+                question: "Какая страна первой ввела законы по переработке мусора?",
+                options: ["Германия", "Швеция", "Япония", "Норвегия"],
+                correct: 0
+            },
+            {
+                question: "Какие отходы можно перерабатывать бесконечно?",
+                options: ["Пластик", "Стекло", "Бумага", "Ткань"],
+                correct: 1
+            },
+            {
+                question: "Какие виды упаковки считаются наиболее экологичными?",
+                options: ["Пластиковые", "Картонные", "Стеклянные", "Металлические"],
+                correct: 1
+            },
+            {
+                question: "Что такое \"апсайклинг\"?",
+                options: ["Сжигание отходов", "Переплавка материалов", "Создание новых продуктов из старых материалов", "Сжигание для энергии"],
+                correct: 2
+            },
+            {
+                question: "Какие батарейки можно переработать?",
+                options: ["Щелочные", "Литиевые", "Свинцово-кислотные", "Все вышеперечисленное"],
+                correct: 3
+            },
+            {
+                question: "Какой процесс используется для переработки стекла?",
+                options: ["Плавление", "Сжигание", "Компрессия", "Погружение в кислоту"],
+                correct: 0
+            }
+        ];
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+
+        function showQuestion(index) {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+
+            const questionElement = document.createElement('div');
+            questionElement.className = 'question';
+            questionElement.textContent = questions[index].question;
+            quizContainer.appendChild(questionElement);
+
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options';
+            questions[index].options.forEach((option, i) => {
+                const optionItem = document.createElement('li');
+                optionItem.innerHTML = `<input type="radio" name="option" value="${i}"> ${option}`;
+                optionsList.appendChild(optionItem);
+            });
+            quizContainer.appendChild(optionsList);
+
+            const feedbackElement = document.createElement('div');
+            feedbackElement.id = 'feedback';
+            feedbackElement.className = 'feedback hidden';
+            quizContainer.appendChild(feedbackElement);
+
+            document.getElementById('confirm-button').className = '';
+            document.getElementById('next-button').className = 'hidden';
+            document.getElementById('result-container').className = 'hidden';
+        }
+
+        function checkAnswer() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (!selectedOption) {
+                alert('Пожалуйста, выберите ответ.');
+                return;
+            }
+
+            const feedbackElement = document.getElementById('feedback');
+            const nextButton = document.getElementById('next-button');
+
+            const isCorrect = selectedOption.value == questions[currentQuestionIndex].correct;
+            feedbackElement.textContent = isCorrect ? 'Правильно!' : 'Неправильно!';
+            feedbackElement.className = 'feedback';
+
+            if (isCorrect) {
+                correctAnswers++;
+            }
+
+            const optionsList = document.querySelectorAll('.options li');
+            optionsList.forEach((option, i) => {
+                if (i == questions[currentQuestionIndex].correct) {
+                    option.className = 'correct';
+                } else if (selectedOption.value == i) {
+                    option.className = 'incorrect';
+                }
+            });
+
+            document.getElementById('confirm-button').className = 'hidden';
+            nextButton.className = '';
+
+            if (currentQuestionIndex < questions.length - 1) {
+                nextButton.textContent = 'Дальше';
+                nextButton.onclick = () => {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                };
+            } else {
+                nextButton.textContent = 'Показать результаты';
+                nextButton.onclick = showResults;
+            }
+        }
+
+        function showResults() {
+            const quizContainer = document.getElementById('quiz-container');
+            const resultContainer = document.getElementById('result-container');
+            const nextButton = document.getElementById('next-button');
+
+            quizContainer.innerHTML = '';
+            resultContainer.innerHTML = `Вы правильно ответили на ${correctAnswers} из ${questions.length} вопросов (${((correctAnswers / questions.length) * 100).toFixed(2)}%).`;
+            resultContainer.className = 'result';
+
+            nextButton.className = 'hidden';
+        }
+
+        // Показать первый вопрос при загрузке страницы
+        showQuestion(currentQuestionIndex);
+    </script>
+</body>
+</html>
